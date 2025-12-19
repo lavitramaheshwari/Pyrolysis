@@ -1,13 +1,85 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pyrolysis Animation</title>
     <script src="https://cdn.tailwindcss.com"></script>
-  </head>
-  <body>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/framer-motion@11.0.8/dist/framer-motion.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body class="bg-slate-950">
     <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+        const { motion, AnimatePresence } = FramerMotion;
+
+        const PyrolysisApp = () => {
+            const [isHeating, setIsHeating] = useState(false);
+            const polymerChain = [1, 2, 3, 4, 5, 6, 7, 8];
+
+            return (
+                <div className="flex flex-col items-center justify-center min-h-screen p-6 text-white text-center">
+                    <h1 className="text-3xl font-bold text-yellow-500 mb-2">Resynergi Pyrolysis</h1>
+                    <p className="text-slate-400 mb-10 max-w-md">
+                        Heating plastic to 900°F without oxygen to crack polymer chains into fuel.
+                    </p>
+
+                    <div className="relative h-48 flex items-center justify-center w-full">
+                        <div className="flex gap-3">
+                            {polymerChain.map((id, index) => (
+                                <motion.div
+                                    key={id}
+                                    animate={isHeating ? {
+                                        y: [0, -20, 20, 0],
+                                        x: index < 4 ? -80 : 80,
+                                        opacity: 0.6,
+                                        rotate: 360,
+                                        scale: 0.6
+                                    } : { y: 0, x: 0, opacity: 1, rotate: 0, scale: 1 }}
+                                    transition={{ duration: 1.5, repeat: isHeating ? Infinity : 0 }}
+                                    className="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-400 to-white shadow-lg"
+                                />
+                            ))}
+                        </div>
+
+                        {isHeating && (
+                            <motion.div 
+                                animate={{ scale: [1, 1.5], opacity: [0, 0.3, 0] }}
+                                transition={{ duration: 0.8, repeat: Infinity }}
+                                className="absolute w-64 h-64 bg-yellow-500 rounded-full blur-3xl"
+                            />
+                        )}
+                    </div>
+
+                    <button 
+                        onClick={() => setIsHeating(!isHeating)}
+                        className={`mt-12 px-10 py-4 rounded-full font-black text-lg transition-all ${
+                            isHeating ? "bg-red-600 shadow-[0_0_30px_red]" : "bg-yellow-500 text-black hover:scale-105"
+                        }`}
+                    >
+                        {isHeating ? "STOP PROCESS" : "START MICROWAVE PYROLYSIS"}
+                    </button>
+
+                    <div className="mt-10 grid grid-cols-2 gap-4 text-sm font-mono">
+                        <div className="p-3 border border-slate-800 rounded bg-slate-900">
+                            <div className="text-yellow-500">INPUT</div>
+                            <div>5 TONS PLASTIC</div>
+                        </div>
+                        <div className="p-3 border border-slate-800 rounded bg-slate-900">
+                            <div className="text-green-500">OUTPUT</div>
+                            <div>800G DIESEL</div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<PyrolysisApp />);
+    </script>
+</body>
 </html>
