@@ -7,75 +7,76 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/framer-motion/11.0.8/framer-motion.js"></script>
+    <script src="https://unpkg.com/framer-motion@11.0.8/dist/framer-motion.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 </head>
 <body class="bg-slate-950 text-white font-sans">
     <div id="root"></div>
 
     <script type="text/babel">
-        // Using a global check to prevent the "ReferenceError"
-        const motion = window.Motion.motion;
+        // Fail-safe to find the Motion library globally
+        const motion = (window.Motion && window.Motion.motion) || (window.FramerMotion && window.FramerMotion.motion);
         const { useState } = React;
+
+        if (!motion) {
+            console.error("Animation library failed to load. Please check your internet connection.");
+        }
 
         const PyrolysisApp = () => {
             const [isHeating, setIsHeating] = useState(false);
             
-            // The process: Waste plastic -> 900F Heat -> Diesel/Naphtha
             return (
                 <div className="flex flex-col items-center justify-center min-h-screen p-8">
-                    <motion.h1 
-                        initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-                        className="text-4xl font-black text-yellow-500 mb-2"
-                    >
-                        RESYNERGI
-                    </motion.h1>
-                    <p className="text-slate-400 mb-12">Plastic to Fuel via Microwave Pyrolysis</p>
+                    <h1 className="text-4xl font-black text-yellow-500 mb-2 tracking-tighter">RESYNERGI</h1>
+                    <p className="text-slate-400 mb-12 text-center">Plastic to Diesel via Microwave Pyrolysis</p>
 
-                    <div className="relative w-64 h-64 flex items-center justify-center bg-slate-900 rounded-3xl border-2 border-slate-800 shadow-inner">
-                        {/* Microwave Pulse Effect */}
-                        {isHeating && (
+                    <div className="relative w-64 h-64 flex items-center justify-center bg-slate-900 rounded-3xl border-2 border-slate-800 shadow-2xl">
+                        {/* Microwave Heat Effect */}
+                        {isHeating && motion && (
                             <motion.div 
-                                animate={{ scale: [1, 1.4, 1], opacity: [0.1, 0.3, 0.1] }}
+                                animate={{ scale: [1, 1.3, 1], opacity: [0.1, 0.4, 0.1] }}
                                 transition={{ duration: 0.8, repeat: Infinity }}
-                                className="absolute inset-0 bg-yellow-500 rounded-3xl blur-xl"
+                                className="absolute inset-0 bg-yellow-500 rounded-3xl blur-2xl"
                             />
                         )}
 
                         {/* Polymer Molecules */}
                         <div className="flex gap-2">
                             {[1, 2, 3, 4].map((i) => (
-                                <motion.div
-                                    key={i}
-                                    animate={isHeating ? {
-                                        y: [0, -20, 20, 0],
-                                        x: i <= 2 ? -60 : 60,
-                                        rotate: 360,
-                                        opacity: 0.5
-                                    } : { y: 0, x: 0, opacity: 1 }}
-                                    transition={{ duration: 2, repeat: isHeating ? Infinity : 0 }}
-                                    className="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-500 to-cyan-300 border border-white"
-                                />
+                                motion ? (
+                                    <motion.div
+                                        key={i}
+                                        animate={isHeating ? {
+                                            y: [0, -30, 30, 0],
+                                            x: i <= 2 ? -60 : 60,
+                                            rotate: 360,
+                                            opacity: 0.4,
+                                            scale: 0.6
+                                        } : { y: 0, x: 0, opacity: 1, scale: 1 }}
+                                        transition={{ duration: 2, repeat: isHeating ? Infinity : 0 }}
+                                        className="w-8 h-8 rounded-full bg-blue-500 border-2 border-white shadow-lg"
+                                    />
+                                ) : <div key={i} className="w-8 h-8 rounded-full bg-blue-500 border-2 border-white" />
                             ))}
                         </div>
                     </div>
 
                     <button 
                         onClick={() => setIsHeating(!isHeating)}
-                        className={`mt-12 px-10 py-4 rounded-full font-bold text-xl transition-all ${
+                        className={`mt-12 px-10 py-4 rounded-full font-bold text-xl transition-all shadow-xl ${
                             isHeating ? "bg-red-600 text-white" : "bg-yellow-500 text-black hover:scale-105"
                         }`}
                     >
                         {isHeating ? "STOP PYROLYSIS" : "START MICROWAVE (900°F)"}
                     </button>
 
-                    <div className="mt-12 grid grid-cols-2 gap-8 text-center bg-slate-900/50 p-6 rounded-xl border border-slate-800">
+                    <div className="mt-12 grid grid-cols-2 gap-8 text-center bg-slate-900/80 p-6 rounded-xl border border-slate-800 w-full max-w-sm">
                         <div>
-                            <span className="block text-slate-500 text-xs font-bold uppercase">Daily Waste</span>
+                            <span className="block text-slate-500 text-xs font-bold uppercase tracking-widest">Input</span>
                             <span className="text-2xl font-mono">5 TONS</span>
                         </div>
                         <div>
-                            <span className="block text-green-500 text-xs font-bold uppercase">Diesel Yield</span>
+                            <span className="block text-green-500 text-xs font-bold uppercase tracking-widest">Diesel Output</span>
                             <span className="text-2xl font-mono text-green-400">800 GAL</span>
                         </div>
                     </div>
