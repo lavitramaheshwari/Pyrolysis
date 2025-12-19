@@ -3,89 +3,123 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Resynergi Pyrolysis Process</title>
+    <title>Plastic-to-Fuel Process</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <script src="https://unpkg.com/framer-motion@11.0.8/dist/framer-motion.js"></script>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://unpkg.com/lucide@0.263.0"></script>
 </head>
-<body class="bg-slate-950 text-white font-sans">
+<body class="bg-[#0f2a4a] text-white font-sans">
     <div id="root"></div>
 
     <script type="text/babel">
-        // Fail-safe to find the Motion library globally
-        const motion = (window.Motion && window.Motion.motion) || (window.FramerMotion && window.FramerMotion.motion);
-        const { useState } = React;
+        const { Trash2, Scissors, Zap, Wind, Fuel } = lucide;
 
-        if (!motion) {
-            console.error("Animation library failed to load. Please check your internet connection.");
-        }
+        const Step = ({ number, title, subtitle, icon: Icon, color = "bg-gray-600" }) => (
+            <div className="flex flex-col items-center p-4 text-center space-y-3">
+                <div className={`w-20 h-20 ${color} rounded-xl border-4 border-yellow-400 flex items-center justify-center shadow-lg`}>
+                    <Icon size={40} className="text-white" />
+                </div>
+                <div>
+                    <h3 className="font-bold text-lg uppercase leading-tight">
+                        {number}. {title}
+                    </h3>
+                    <p className="text-sm text-blue-200">{subtitle}</p>
+                </div>
+            </div>
+        );
 
-        const PyrolysisApp = () => {
-            const [isHeating, setIsHeating] = useState(false);
-            
+        const Arrow = () => (
+            <div className="hidden md:flex items-center justify-center flex-1">
+                <div className="h-1 w-full bg-gray-500 relative">
+                    <div className="absolute right-0 -top-1 w-3 h-3 bg-yellow-400 rounded-full"></div>
+                </div>
+            </div>
+        );
+
+        const PlasticToFuelApp = () => {
             return (
-                <div className="flex flex-col items-center justify-center min-h-screen p-8">
-                    <h1 className="text-4xl font-black text-yellow-500 mb-2 tracking-tighter">RESYNERGI</h1>
-                    <p className="text-slate-400 mb-12 text-center">Plastic to Diesel via Microwave Pyrolysis</p>
+                <div className="min-h-screen p-8 max-w-6xl mx-auto">
+                    <header className="text-center mb-16">
+                        <h1 className="text-5xl font-black italic tracking-tighter">
+                            PLASTIC-TO-FUEL: <span className="text-blue-400">STEP-BY-STEP</span>
+                        </h1>
+                    </header>
 
-                    <div className="relative w-64 h-64 flex items-center justify-center bg-slate-900 rounded-3xl border-2 border-slate-800 shadow-2xl">
-                        {/* Microwave Heat Effect */}
-                        {isHeating && motion && (
-                            <motion.div 
-                                animate={{ scale: [1, 1.3, 1], opacity: [0.1, 0.4, 0.1] }}
-                                transition={{ duration: 0.8, repeat: Infinity }}
-                                className="absolute inset-0 bg-yellow-500 rounded-3xl blur-2xl"
+                    <main className="grid grid-cols-1 md:grid-cols-9 gap-4 items-start">
+                        {/* Step 1 */}
+                        <div className="col-span-1">
+                            <Step 
+                                number="1" 
+                                title="Plastic Waste" 
+                                subtitle="Dirty plastic!" 
+                                icon={Trash2} 
+                                color="bg-green-600" 
                             />
-                        )}
-
-                        {/* Polymer Molecules */}
-                        <div className="flex gap-2">
-                            {[1, 2, 3, 4].map((i) => (
-                                motion ? (
-                                    <motion.div
-                                        key={i}
-                                        animate={isHeating ? {
-                                            y: [0, -30, 30, 0],
-                                            x: i <= 2 ? -60 : 60,
-                                            rotate: 360,
-                                            opacity: 0.4,
-                                            scale: 0.6
-                                        } : { y: 0, x: 0, opacity: 1, scale: 1 }}
-                                        transition={{ duration: 2, repeat: isHeating ? Infinity : 0 }}
-                                        className="w-8 h-8 rounded-full bg-blue-500 border-2 border-white shadow-lg"
-                                    />
-                                ) : <div key={i} className="w-8 h-8 rounded-full bg-blue-500 border-2 border-white" />
-                            ))}
                         </div>
-                    </div>
+                        
+                        <Arrow />
 
-                    <button 
-                        onClick={() => setIsHeating(!isHeating)}
-                        className={`mt-12 px-10 py-4 rounded-full font-bold text-xl transition-all shadow-xl ${
-                            isHeating ? "bg-red-600 text-white" : "bg-yellow-500 text-black hover:scale-105"
-                        }`}
-                    >
-                        {isHeating ? "STOP PYROLYSIS" : "START MICROWAVE (900°F)"}
-                    </button>
+                        {/* Step 2 */}
+                        <div className="col-span-1">
+                            <Step 
+                                number="2" 
+                                title="Shredder & Feed" 
+                                subtitle="Chops plastic small!" 
+                                icon={Scissors} 
+                            />
+                        </div>
 
-                    <div className="mt-12 grid grid-cols-2 gap-8 text-center bg-slate-900/80 p-6 rounded-xl border border-slate-800 w-full max-w-sm">
-                        <div>
-                            <span className="block text-slate-500 text-xs font-bold uppercase tracking-widest">Input</span>
-                            <span className="text-2xl font-mono">5 TONS</span>
+                        <Arrow />
+
+                        {/* Step 3 */}
+                        <div className="col-span-1">
+                            <Step 
+                                number="3" 
+                                title="Microwave Reactor" 
+                                subtitle="Super-heats plastic!" 
+                                icon={Zap} 
+                            />
+                            <div className="mt-2 text-orange-400 font-bold text-sm">900°F+</div>
                         </div>
-                        <div>
-                            <span className="block text-green-500 text-xs font-bold uppercase tracking-widest">Diesel Output</span>
-                            <span className="text-2xl font-mono text-green-400">800 GAL</span>
+
+                        <Arrow />
+
+                        {/* Step 4 */}
+                        <div className="col-span-1">
+                            <Step 
+                                number="4" 
+                                title="Cooling & Condensation" 
+                                subtitle="Gas turns to liquid!" 
+                                icon={Wind} 
+                                color="bg-blue-500"
+                            />
                         </div>
-                    </div>
+
+                        <Arrow />
+
+                        {/* Step 5 */}
+                        <div className="col-span-1">
+                            <Step 
+                                number="5" 
+                                title="Fuel Output" 
+                                subtitle="Ready for trucks!" 
+                                icon={Fuel} 
+                                color="bg-gray-700"
+                            />
+                        </div>
+                    </main>
+
+                    <footer className="mt-20 border-t border-blue-900 pt-8 text-center text-blue-300">
+                        <p>Chemical Recycling Process Flow • High-Temp Vaporization</p>
+                    </footer>
                 </div>
             );
         };
 
         const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<PyrolysisApp />);
+        root.render(<PlasticToFuelApp />);
     </script>
 </body>
 </html>
