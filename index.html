@@ -3,81 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Resynergi Pyrolysis Animation</title>
+    <title>Resynergi Pyrolysis Process</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <script src="https://unpkg.com/framer-motion@11.0.8/dist/framer-motion.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/framer-motion/11.0.8/framer-motion.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 </head>
-<body class="bg-slate-900">
+<body class="bg-slate-950 text-white font-sans">
     <div id="root"></div>
 
     <script type="text/babel">
+        // Using a global check to prevent the "ReferenceError"
+        const motion = window.Motion.motion;
         const { useState } = React;
-        const { motion } = FramerMotion;
 
-        const PyrolysisDemo = () => {
-            const [isActive, setIsActive] = useState(false);
-            const molecules = [1, 2, 3, 4, 5, 6];
-
+        const PyrolysisApp = () => {
+            const [isHeating, setIsHeating] = useState(false);
+            
+            // The process: Waste plastic -> 900F Heat -> Diesel/Naphtha
             return (
-                <div className="flex flex-col items-center justify-center min-h-screen text-white font-sans p-4">
-                    <h1 className="text-4xl font-black text-yellow-500 mb-4 tracking-tighter">RESYNERGI</h1>
-                    <p className="text-slate-400 mb-8 text-center max-w-md italic">
-                        "Converting waste plastic into diesel fuel using microwave pyrolysis."
-                    </p>
+                <div className="flex flex-col items-center justify-center min-h-screen p-8">
+                    <motion.h1 
+                        initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+                        className="text-4xl font-black text-yellow-500 mb-2"
+                    >
+                        RESYNERGI
+                    </motion.h1>
+                    <p className="text-slate-400 mb-12">Plastic to Fuel via Microwave Pyrolysis</p>
 
-                    {/* The Pyrolysis Reactor Core */}
-                    <div className="relative w-72 h-72 flex items-center justify-center border-4 border-slate-700 rounded-3xl bg-slate-800 shadow-2xl overflow-hidden">
-                        
-                        {/* Microwave Glow Effect */}
-                        {isActive && (
+                    <div className="relative w-64 h-64 flex items-center justify-center bg-slate-900 rounded-3xl border-2 border-slate-800 shadow-inner">
+                        {/* Microwave Pulse Effect */}
+                        {isHeating && (
                             <motion.div 
-                                animate={{ opacity: [0, 0.4, 0], scale: [0.8, 1.2] }}
-                                transition={{ duration: 0.5, repeat: Infinity }}
-                                className="absolute inset-0 bg-yellow-400 blur-3xl"
+                                animate={{ scale: [1, 1.4, 1], opacity: [0.1, 0.3, 0.1] }}
+                                transition={{ duration: 0.8, repeat: Infinity }}
+                                className="absolute inset-0 bg-yellow-500 rounded-3xl blur-xl"
                             />
                         )}
 
-                        {/* Polymer Chains breaking into fuel */}
-                        <div className="flex gap-2 relative z-10">
-                            {molecules.map((m, i) => (
+                        {/* Polymer Molecules */}
+                        <div className="flex gap-2">
+                            {[1, 2, 3, 4].map((i) => (
                                 <motion.div
                                     key={i}
-                                    animate={isActive ? {
-                                        y: [0, -40, 40, 0],
-                                        x: i < 3 ? -100 : 100,
+                                    animate={isHeating ? {
+                                        y: [0, -20, 20, 0],
+                                        x: i <= 2 ? -60 : 60,
                                         rotate: 360,
-                                        scale: 0.5,
-                                        opacity: 0.3
-                                    } : { y: 0, x: 0, scale: 1, opacity: 1 }}
-                                    transition={{ duration: 2, repeat: isActive ? Infinity : 0 }}
-                                    className="w-8 h-8 rounded-full bg-blue-500 border-2 border-white shadow-lg"
+                                        opacity: 0.5
+                                    } : { y: 0, x: 0, opacity: 1 }}
+                                    transition={{ duration: 2, repeat: isHeating ? Infinity : 0 }}
+                                    className="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-500 to-cyan-300 border border-white"
                                 />
                             ))}
                         </div>
                     </div>
 
                     <button 
-                        onClick={() => setIsActive(!isActive)}
-                        className={`mt-10 px-12 py-4 rounded-full font-bold text-xl transition-all transform hover:scale-105 ${
-                            isActive ? "bg-red-600 shadow-[0_0_20px_red]" : "bg-yellow-500 text-black shadow-xl"
+                        onClick={() => setIsHeating(!isHeating)}
+                        className={`mt-12 px-10 py-4 rounded-full font-bold text-xl transition-all ${
+                            isHeating ? "bg-red-600 text-white" : "bg-yellow-500 text-black hover:scale-105"
                         }`}
                     >
-                        {isActive ? "STOP PROCESS" : "START MICROWAVE (900°F)"}
+                        {isHeating ? "STOP PYROLYSIS" : "START MICROWAVE (900°F)"}
                     </button>
 
-                    {/* Process Stats from Video */}
-                    <div className="mt-12 flex gap-8 text-center bg-black/30 p-6 rounded-2xl border border-white/10">
+                    <div className="mt-12 grid grid-cols-2 gap-8 text-center bg-slate-900/50 p-6 rounded-xl border border-slate-800">
                         <div>
-                            <p className="text-slate-500 text-xs uppercase font-bold">Input</p>
-                            <p className="text-xl font-mono">5 TONS Plastic</p>
+                            <span className="block text-slate-500 text-xs font-bold uppercase">Daily Waste</span>
+                            <span className="text-2xl font-mono">5 TONS</span>
                         </div>
-                        <div className="w-px bg-slate-700 h-10"></div>
                         <div>
-                            <p className="text-green-500 text-xs uppercase font-bold">Output</p>
-                            <p className="text-xl font-mono">800G Diesel</p>
+                            <span className="block text-green-500 text-xs font-bold uppercase">Diesel Yield</span>
+                            <span className="text-2xl font-mono text-green-400">800 GAL</span>
                         </div>
                     </div>
                 </div>
@@ -85,7 +84,7 @@
         };
 
         const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<PyrolysisDemo />);
+        root.render(<PyrolysisApp />);
     </script>
 </body>
 </html>
