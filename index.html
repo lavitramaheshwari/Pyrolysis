@@ -5,33 +5,50 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Plastic-to-Fuel Process</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <script src="https://unpkg.com/lucide@0.263.0"></script>
+    <style>
+        body { background-color: #0f2a4a; color: white; }
+    </style>
 </head>
-<body class="bg-[#0f2a4a] text-white font-sans">
+<body>
     <div id="root"></div>
 
     <script type="text/babel">
-        const { Trash2, Scissors, Zap, Wind, Fuel } = lucide;
+        // Custom SVG Icons to avoid library loading errors
+        const TrashIcon = () => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18m-2 0v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6m3 0V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path></svg>
+        );
+        const ShredIcon = () => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+        );
+        const HeatIcon = () => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path></svg>
+        );
+        const LiquidIcon = () => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path></svg>
+        );
+        const FuelIcon = () => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 22L15 22M4 9L14 9M14 2L14 22M4 2L4 9M9 22V12M18 5L22 5M18 9L22 9M18 13L22 13M19 16V22"></path></svg>
+        );
 
-        const Step = ({ number, title, subtitle, icon: Icon, color = "bg-gray-600" }) => (
+        const Step = ({ number, title, subtitle, Icon, color = "bg-gray-600" }) => (
             <div className="flex flex-col items-center p-4 text-center space-y-3">
                 <div className={`w-20 h-20 ${color} rounded-xl border-4 border-yellow-400 flex items-center justify-center shadow-lg`}>
-                    <Icon size={40} className="text-white" />
+                    <Icon />
                 </div>
                 <div>
-                    <h3 className="font-bold text-lg uppercase leading-tight">
+                    <h3 className="font-bold text-lg uppercase leading-tight tracking-tight">
                         {number}. {title}
                     </h3>
-                    <p className="text-sm text-blue-200">{subtitle}</p>
+                    <p className="text-sm text-blue-200 font-medium">{subtitle}</p>
                 </div>
             </div>
         );
 
         const Arrow = () => (
-            <div className="hidden md:flex items-center justify-center flex-1">
+            <div className="hidden lg:flex items-center justify-center flex-1 min-w-[40px]">
                 <div className="h-1 w-full bg-gray-500 relative">
                     <div className="absolute right-0 -top-1 w-3 h-3 bg-yellow-400 rounded-full"></div>
                 </div>
@@ -40,80 +57,30 @@
 
         const PlasticToFuelApp = () => {
             return (
-                <div className="min-h-screen p-8 max-w-6xl mx-auto">
+                <div className="min-h-screen p-4 md:p-12 max-w-7xl mx-auto flex flex-col justify-center">
                     <header className="text-center mb-16">
-                        <h1 className="text-5xl font-black italic tracking-tighter">
-                            PLASTIC-TO-FUEL: <span className="text-blue-400">STEP-BY-STEP</span>
+                        <h1 className="text-4xl md:text-6xl font-black italic tracking-tighter uppercase">
+                            Plastic-to-Fuel: <span className="text-blue-400">Process Flow</span>
                         </h1>
                     </header>
 
-                    <main className="grid grid-cols-1 md:grid-cols-9 gap-4 items-start">
-                        {/* Step 1 */}
-                        <div className="col-span-1">
-                            <Step 
-                                number="1" 
-                                title="Plastic Waste" 
-                                subtitle="Dirty plastic!" 
-                                icon={Trash2} 
-                                color="bg-green-600" 
-                            />
-                        </div>
-                        
+                    <main className="flex flex-col lg:flex-row items-center justify-between gap-4">
+                        <Step number="1" title="Plastic Waste" subtitle="Dirty plastic!" Icon={TrashIcon} color="bg-green-600" />
                         <Arrow />
-
-                        {/* Step 2 */}
-                        <div className="col-span-1">
-                            <Step 
-                                number="2" 
-                                title="Shredder & Feed" 
-                                subtitle="Chops plastic small!" 
-                                icon={Scissors} 
-                            />
-                        </div>
-
+                        <Step number="2" title="Shredder" subtitle="Chops plastic small!" Icon={ShredIcon} color="bg-gray-500" />
                         <Arrow />
-
-                        {/* Step 3 */}
-                        <div className="col-span-1">
-                            <Step 
-                                number="3" 
-                                title="Microwave Reactor" 
-                                subtitle="Super-heats plastic!" 
-                                icon={Zap} 
-                            />
-                            <div className="mt-2 text-orange-400 font-bold text-sm">900°F+</div>
-                        </div>
-
+                        <Step number="3" title="Reactor" subtitle="900°F+ Super-heat" Icon={HeatIcon} color="bg-orange-600" />
                         <Arrow />
-
-                        {/* Step 4 */}
-                        <div className="col-span-1">
-                            <Step 
-                                number="4" 
-                                title="Cooling & Condensation" 
-                                subtitle="Gas turns to liquid!" 
-                                icon={Wind} 
-                                color="bg-blue-500"
-                            />
-                        </div>
-
+                        <Step number="4" title="Condensation" subtitle="Gas to liquid" Icon={LiquidIcon} color="bg-blue-500" />
                         <Arrow />
-
-                        {/* Step 5 */}
-                        <div className="col-span-1">
-                            <Step 
-                                number="5" 
-                                title="Fuel Output" 
-                                subtitle="Ready for trucks!" 
-                                icon={Fuel} 
-                                color="bg-gray-700"
-                            />
-                        </div>
+                        <Step number="5" title="Output" subtitle="Ready for trucks!" Icon={FuelIcon} color="bg-emerald-700" />
                     </main>
 
-                    <footer className="mt-20 border-t border-blue-900 pt-8 text-center text-blue-300">
-                        <p>Chemical Recycling Process Flow • High-Temp Vaporization</p>
-                    </footer>
+                    <div className="mt-20 p-6 bg-white/5 rounded-2xl border border-white/10 text-center">
+                        <p className="text-blue-300 text-sm uppercase tracking-widest font-bold">
+                            High-Efficiency Thermal Conversion Technology
+                        </p>
+                    </div>
                 </div>
             );
         };
